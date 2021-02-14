@@ -1,7 +1,7 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { response } = require('express');
-const app = require('../app');
+const app = require('../../app');
 const { deleteOne } = require('../models/movie');
 const axios = require('axios');
 const Movie = require('../models/movie');

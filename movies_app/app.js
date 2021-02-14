@@ -4,11 +4,11 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const axios = require('axios');
-const Movie = require('./models/movie');
+const Movie = require('./movies_app/models/movie');
 const jwt = require('jsonwebtoken');
 
 const PORT = 4000;
-const { SECRET, MONGODB_PASSWORD, OMDB_KEY} = process.env;
+const { JWT_SECRET, MONGODB_PASSWORD, OMDB_KEY} = process.env;
 
 const db = 'mongodb+srv://marcin:' + MONGODB_PASSWORD +'@cluster0.qoe8q.mongodb.net/nowy_projekt?retryWrites=true&w=majority';
 
@@ -46,7 +46,7 @@ const authenticateUser = (req, res, next) => {
     if (token === null) {
         return res.status(401).json({ error: "No token provided" });
     }
-    jwt.verify(token, SECRET, (error, user ) => {
+    jwt.verify(token, JWT_SECRET, (error, user ) => {
         if (error) {
             return res.status(403).json({ error: "Provided token in invalid" });
         }

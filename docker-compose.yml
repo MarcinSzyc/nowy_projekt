@@ -1,16 +1,28 @@
 version: "3.2"
 services:
-  app:
+  movie:
     command: node app.js
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./movies_app
+      dockerfile: movies_app/Dockerfile
     ports:
       - published: ${APP_PORT:-4000}
         target: 4000
     volumes:
       - .:/app/
     environment:
-      SECRET: ${SECRET}
+      JWT_SECRET: ${JWT_SECRET}
       MONGODB_PASSWORD: ${MONGODB_PASSWORD}
       OMDB_KEY: ${OMDB_KEY}
+  app:
+    command: node src/server.js
+    build:
+      context: ./auth_server
+      dockerfile: auth_server/Dockerfile
+    ports:
+      - published: ${APP_PORT:-3000}
+        target: 3000
+    volumes:
+      - .:/app/
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
