@@ -18,10 +18,20 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true})
 app.use(express.json());
 
 const fetchMovieDetails = (movieTitle) => {
-    return axios({
-        method: 'get',
-        url: 'http://www.omdbapi.com/?i=tt3896198&apikey=48caed9c&t=' + movieTitle
-    })
+    return new Promise((resolve) => {
+        try {
+            axios({
+                method: 'get',
+                url: 'http://www.omdbapi.com/?i=tt3896198&apikey=48caed9c&t=' + movieTitle,
+            })
+            .then((result) => {
+                resolve(result);
+            })
+        } catch (err) {
+            console.error(err);
+            reject();
+        }
+    });
 }
 
 const authenticateUser = (req, res, next) => {
