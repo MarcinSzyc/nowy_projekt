@@ -60,9 +60,6 @@ app.get('/movies', authenticateUser, (req, res) => {
         .catch(error => {
             res.status(500).json({error: error})
         })
-        .finally(()={
-            mongoose.connection.close()
-        });
 });
 
 app.post('/movies', authenticateUser, (req, res) => {
