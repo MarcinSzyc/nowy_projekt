@@ -7,12 +7,15 @@ const axios = require('axios');
 const Movie = require('./models/movie');
 const jwt = require('jsonwebtoken');
 
-const db = 'mongodb+srv://marcin:' + process.env.MONGODB_PASSWORD +'@cluster0.qoe8q.mongodb.net/nowy_projekt?retryWrites=true&w=majority';
+const PORT = 4000;
+const { SECRET, MONGODB_PASSWORD, OMDB_KEY} = process.env;
+
+const db = 'mongodb+srv://marcin:' + MONGODB_PASSWORD +'@cluster0.qoe8q.mongodb.net/nowy_projekt?retryWrites=true&w=majority';
 
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true})
     .then((result) => {
         console.log('connected to db');
-        app.listen(3500);
+        app.listen(PORT);
     })
     .catch((err) => console.log("Error while connecting to db" + err));
 
@@ -24,7 +27,7 @@ const fetchMovieDetails = (movieTitle) => {
         try {
             axios({
                 method: 'get',
-                url: 'http://www.omdbapi.com/?i=tt3896198&apikey=' + process.env.OMDB_KEY + '=' + movieTitle,
+                url: 'http://www.omdbapi.com/?i=tt3896198&apikey=' + OMDB_KEY + '=' + movieTitle,
             })
             .then((result) => {
                 resolve(result);
@@ -43,7 +46,7 @@ const authenticateUser = (req, res, next) => {
     if (token === null) {
         return res.status(401).json({ error: "No token provided" });
     }
-    jwt.verify(token, process.env.SECRET, (error, user ) => {
+    jwt.verify(token, SECRET, (error, user ) => {
         if (error) {
             return res.status(403).json({ error: "Provided token in invalid" });
         }

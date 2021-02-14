@@ -1,0 +1,16 @@
+version: "3.2"
+services:
+  app:
+    command: node app.js
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - published: ${APP_PORT:-4000}
+        target: 4000
+    volumes:
+      - .:/app/
+    environment:
+      SECRET: ${SECRET}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      OMDB_KEY: ${OMDB_KEY}
