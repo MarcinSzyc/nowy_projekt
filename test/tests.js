@@ -17,7 +17,7 @@ describe('endpoint tests', () => {
             try {
                 axios({
                     method: 'post',
-                    url: 'http://localhost:3000/auth',
+                    url: '0.0.0.0:3000/auth',
                     data: {
                         username: 'basic-thomas',
                         password:  'sR-_pcoow-27-6PAwCD8'
