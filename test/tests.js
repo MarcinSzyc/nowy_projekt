@@ -68,13 +68,20 @@ describe('endpoint tests', () => {
     })
 
     after(() => {
-        Movie.remove({ title: 'test' }, (err) => {
-            if (!err) {
+        Movie.deleteMany({title: "Test" })
+        .then((result) => {
+            if (result.deletedCount > 0) {
                 console.log('test data successfully removed');
+            } else {
+                console.log('nothing removed');
             }
-            else {
-                message.type = 'error';
-            }
-        });
+
+        })
+        .catch((error) => { 
+            console.log(error);
+        })
+        .finally(() => {
+            process.exit();
+        })
     })
 })
