@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const axios = require('axios');
-const Movie = require('./movies_app/models/movie');
+const Movie = require('./models/movie');
 const jwt = require('jsonwebtoken');
 
 const PORT = 4000;
