@@ -30,7 +30,7 @@ jobs:
           run: docker-compose run -e JWT_SECRET=secret --service-ports auth
       - name: install dependencies
         working-directory: ./movies
-        run: node install
+        run: npm install
       - name: run tests
         working-directory: ./movies
         run: npm test
