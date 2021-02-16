@@ -2,35 +2,37 @@
 
 name: CI
 
-# Controls when the action will run. 
+
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./movies
+    
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: run authorization app
         uses: isbang/compose-action@v0.2.0
         with: 
-          compose-file: ./docker-compose.yml
+          compose-file: ../docker-compose.yml
           run: docker-compose run -e JWT_SECRET=secret --service-ports auth
-      - name: install dependencies
-        working-directory: ./movies
-        run: npm install
-      - name: run tests
-        working-directory: ./movies
-        run: npm test
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm test
