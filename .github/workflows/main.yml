@@ -24,15 +24,13 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: run authorization app
-        working-directory: ./
-        run: docker-compose run -e JWT_SECRET=secret --service-ports auth
+        uses: isbang/compose-action@v0.2.0
+        with: 
+          compose-file: ./docker-compose.yml
+          run: docker-compose run -e JWT_SECRET=secret --service-ports auth
       - name: install dependencies
         working-directory: ./movies
         run: node install
       - name: run tests
         working-directory: ./movies
         run: npm test
-      - name: run docker compose
-        uses: isbang/compose-action@v0.2.0
-        with: 
-          compose-file: ./docker-compose.yml
