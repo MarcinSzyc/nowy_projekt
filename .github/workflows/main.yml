@@ -24,6 +24,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: run authorization app
+        working-directory: ./
         run: docker-compose run -e JWT_SECRET=secret --service-ports auth
       - name: install dependencies
         working-directory: ./movies
