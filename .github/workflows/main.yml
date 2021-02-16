@@ -14,25 +14,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: ./movies
-    
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: run authorization app
         uses: isbang/compose-action@v0.2.0
         with: 
-          compose-file: ../docker-compose.yml
+          compose-file: ./docker-compose.yml
           run: docker-compose run -e JWT_SECRET=secret --service-ports auth
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '14.x'
       - run: npm ci
+        shell: bash
+        working-directory: ./movies
       - run: npm test
+        shell: bash
+        working-directory: ./movies
+        
