@@ -32,8 +32,11 @@ const fetchMovieDetails = (movieTitle) => {
             .then((result) => {
                 resolve(result);
             })
+            .catch((err) => {
+                var test = 'r'
+            })
         } catch (err) {
-            console.error(err);
+            res.status(401).json({ error: "Error while reaching omdb" });
             reject();
         }
     });
