@@ -7,13 +7,20 @@ const movieSchema = new Schema({
         requires: true
     },
     released: {
-        type: Date
+        type: Date,
+        requires: true
     },
     genre: {
-        type: String
+        type: String,
+        requires: true
     },
     directory: {
-        type: String
+        type: String,
+        requires: true
+    },
+    createdBy: {
+        type: String,
+        requires: true
     }
 }, {timestamps: true});
 

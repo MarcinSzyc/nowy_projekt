@@ -14,10 +14,10 @@ const db = 'mongodb+srv://marcin:' + MONGODB_PASSWORD +'@cluster0.qoe8q.mongodb.
 
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true})
     .then((result) => {
-        console.log('connected to db');
+        console.log('connected to DB');
         app.listen(PORT);
     })
-    .catch((err) => console.log("Error while connecting to db" + err));
+    .catch((err) => console.log("Error while connecting to DB: " + err));
 
 //set middleware
 app.use(express.json());
@@ -43,16 +43,38 @@ const authenticateUser = (req, res, next) => {
     const authorizationHeader = req.headers['authorization'];
     const token = authorizationHeader && authorizationHeader.split(' ')[1];
     
-    if (token === null) {
+    if (!token) {
         return res.status(401).json({ error: "No token provided" });
     }
-    jwt.verify(token, JWT_SECRET, (error, user ) => {
-        if (error) {
-            return res.status(403).json({ error: "Provided token in invalid" });
+
+    jwt.verify(token, 'secret', (err, user ) => {
+        if (err) {
+            return res.status(403).json({ error: "Provided token in invalid: " + err });
         }
-        req.userStatus = 'Authenticated';
+        req.userName = user;
         next()
     })
+}
+
+const checkLimit = (req, res, next) => {
+    const userName = req.userName;
+    const userRole = userName.role;
+    if (userRole === 'basic') {
+        Movie.find({createdBy : userName.name}, (err, data) => {
+            if (err) {
+                return res.status(500).json({ error: "Error while checking DB limits: " + err });
+            }
+            let month = new Date().getMonth();
+            let dataLength = data.filter((element) => {
+                return element.createdAt.getMonth() === month;
+            })
+            if (dataLength.length >= 5) {
+                return res.status(429).json({ error: "User reached monthly limit of requests" })
+            } else {
+                next();
+            }
+        })  
+    }
 }
 
 app.get('/movies', authenticateUser, (req, res) => {
@@ -60,21 +82,21 @@ app.get('/movies', authenticateUser, (req, res) => {
         .then(result => {
             res.status(200).json(result);
         })
-        .catch(error => {
-            res.status(500).json({error: error})
+        .catch(err => {
+            res.status(500).json({error: err})
         })
 });
 
-app.post('/movies', authenticateUser, (req, res) => {
+app.post('/movies', authenticateUser, checkLimit, (req, res) => {
     const movieTitle = req.body.movieName;
     const movieDetails = fetchMovieDetails(movieTitle)
     .then(response => {
         if (!response || !response.data || response.data.Error || response.data.Title === 'undefined') {
             return res.status(400).json({ error: "Movie title not found" })
         }
-        Movie.find({ title : response.data.Title }, (error, data) => {
-            if (error) {
-                return res.status(500).json({ error: "Error while saving to DB" });
+        Movie.find({ title : response.data.Title }, (err, data) => {
+            if (err) {
+                return res.status(500).json({ error: "Error while saving to DB:" + err });
             }
             if (data.length) {
                 return res.status(409).json({ error: "Object already exist" });
@@ -84,17 +106,18 @@ app.post('/movies', authenticateUser, (req, res) => {
             title: response.data.Title,
             released: response.data.Released,
             genre: response.data.Genre,
-            directory: response.data.Director
+            directory: response.data.Director,
+            createdBy: req.userName.name
         })
         movie.save()
             .then(() => {
                 Movie.find()
-                    .then(movies => {
+                    .then(() => {
                         res.status(200).json({success: 'Movie created successfully'});
                     });
             })
-            .catch((error) => {
-                res.status(500).json({error: "Error while saving data to DB"});
+            .catch((err) => {
+                res.status(500).json({error: "Error while saving data to DB: " + err});
             })
     });
 });
