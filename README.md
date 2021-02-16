@@ -10,10 +10,8 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
+    <li><a href="#built-with">Built With</a></li>
     <li>
       <a href="#getting-started">Getting Started</a>
     </li>
@@ -31,7 +29,7 @@
 This is testbed for RESTfull Movies application. It use 3 endpoints and 2 services collated together in one dockey-compose file.
 After authentication user has an option to create a Movie entry in DataBase. Once filled user can fetch all available data.
 
-### Built With
+## Built With
 
 This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 * [Node](https://https://nodejs.org/)
