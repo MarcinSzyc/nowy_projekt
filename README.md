@@ -1,4 +1,3 @@
-
 [![MIT License][license-shield]][license-url]
 
 <h1 align="center">MOVIES - Nowy_projekt</h1>
@@ -103,3 +102,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 
 Marcin Szyc - szyc.marcin@gmail.com
+
+
+[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
